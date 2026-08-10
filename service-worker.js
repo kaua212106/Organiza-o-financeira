@@ -4,7 +4,7 @@ const CACHE_PREFIX = 'minhas-financas-';
 const OFFLINE_FILES = [
   './index.html',
   './manifest.json',
-  './icone.jpg'
+  './icone.png'
 ];
 
 self.addEventListener('install', event => {

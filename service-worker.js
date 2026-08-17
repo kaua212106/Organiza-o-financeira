@@ -4,7 +4,8 @@ const CACHE_PREFIX = 'minhas-financas-';
 const OFFLINE_FILES = [
   './index.html',
   './manifest.json',
-  './icone.png'
+  './icone.png',
+  './auth-guard-v3.js'
 ];
 
 self.addEventListener('install', event => {

@@ -23,6 +23,7 @@
   let api = null;
   let checking = false;
   let firebaseReady = false;
+  let initialAccessCheckHandled = false;
 
   function deviceId(){
     let id = "";
@@ -143,7 +144,7 @@
           <h2>${escapeHtml(title)}</h2>
           <p>${escapeHtml(message)}</p>
           <button id="centralGuardOpenCentral">Abrir Central</button>
-          <small>Proteção da Central • V3</small>
+          <small>Proteção da Central • V4</small>
         </div>
       </div>`;
 
@@ -243,7 +244,7 @@
       allowApp();
 
     }catch(err){
-      console.error("Central Auth Guard V3:",err);
+      console.error("Central Auth Guard V4:",err);
 
       // Se a consulta online falhar de verdade, ainda tenta a autorização
       // offline já salva, desde que esteja dentro dos 7 dias.
@@ -292,6 +293,9 @@
     firebaseReady = true;
 
     authM.onAuthStateChanged(auth,user=>{
+      if(initialAccessCheckHandled) return;
+      initialAccessCheckHandled = true;
+
       if(navigator.onLine){
         verifyOnline(user);
       }else{
@@ -310,12 +314,9 @@
       showLoading();
       await initFirebase();
 
-      // onAuthStateChanged fará a verificação principal.
-      if(auth?.currentUser){
-        await verifyOnline(auth.currentUser);
-      }
+      // A primeira emissão do onAuthStateChanged fará a única verificação deste carregamento.
     }catch(err){
-      console.error("Central Auth Guard V3 init:",err);
+      console.error("Central Auth Guard V4 init:",err);
 
       if(offlineGrantIsValid()){
         allowApp();
@@ -328,29 +329,6 @@
     }
   }
 
-  function recheck(){
-    if(document.visibilityState !== "visible") return;
-
-    if(navigator.onLine){
-      if(firebaseReady){
-        verifyOnline(auth?.currentUser || null);
-      }else{
-        evaluate();
-      }
-    }else{
-      checkOfflineAccess();
-    }
-  }
-
-  addEventListener("online",recheck);
-  addEventListener("offline",recheck);
-  addEventListener("focus",recheck);
-
-  document.addEventListener("visibilitychange",()=>{
-    if(document.visibilityState === "visible") recheck();
-  });
-
-  setInterval(recheck,60000);
 
   if(document.readyState === "loading"){
     document.addEventListener("DOMContentLoaded",evaluate,{once:true});

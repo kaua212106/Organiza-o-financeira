@@ -1,11 +1,12 @@
-const CACHE_NAME = 'minhas-financas-auto';
+const CACHE_NAME = 'minhas-financas-central-sync-v2';
 const CACHE_PREFIX = 'minhas-financas-';
 
 const OFFLINE_FILES = [
   './index.html',
   './manifest.json',
   './icone.png',
-  './auth-guard-v3.js'
+  './auth-guard-v3.js',
+  './central-sync.js'
 ];
 
 self.addEventListener('install', event => {
